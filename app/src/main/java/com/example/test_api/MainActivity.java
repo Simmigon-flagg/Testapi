@@ -12,6 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     private TextView textViewResult;
+    JSONplaceholderAPI jsonplaceholderAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +24,14 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        JSONplaceholderAPI jsonplaceholderAPI =  retrofit.create(JSONplaceholderAPI.class);
+        jsonplaceholderAPI =  retrofit.create(JSONplaceholderAPI.class);
+
+//        getPosts();
+              getComments();
+
+    }
+
+    private void getPosts(){
 
         Call<List<Post>> call = jsonplaceholderAPI.getPosts();
 
@@ -41,12 +49,11 @@ public class MainActivity extends AppCompatActivity {
                 for (Post post : posts){
                     String content = "";
                     content += "ID: " + post.getId() + "\n";
-                    content += "Users ID: " + post.getUserId() + "\n";
-                    content += "Title ID: " + post.getTitle() + "\n";
-                    content += "Text ID: " + post.getText() + "\n\n";
+                    content += "Users: " + post.getUserId() + "\n";
+                    content += "Title: " + post.getTitle() + "\n";
+                    content += "Text: " + post.getText() + "\n\n";
 
                     textViewResult.append(content);
-
 
                 }
 
@@ -58,7 +65,49 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
 
+
+
+    private void getComments(){
+
+        Call<List<Comment>> call = jsonplaceholderAPI.getComments();
+
+        call.enqueue(new Callback<List<Comment>>() {
+            @Override
+            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
+
+                if(!response.isSuccessful()){
+                    textViewResult.setText("Code: " + response.code());
+                    return;
+                }
+
+                List<Comment> comments = response.body();
+
+                for (Comment comment : comments){
+                    String content = "";
+                    content += "Users ID: " + comment.getId() + "\n";
+                    content += "The POST's ID: " + comment.getPostId() + "\n";
+                    content += "Name: " + comment.getName() + "\n";
+                    content += "Email: " + comment.getEmail() + "\n";
+                    content += "Text: " + comment.getText() + "\n\n";
+
+                    textViewResult.append(content);
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Comment>> call, Throwable t) {
+                textViewResult.setText(t.getMessage());
+
+            }
+        });
+
+
+    }
 }
 // My Test Push+++
