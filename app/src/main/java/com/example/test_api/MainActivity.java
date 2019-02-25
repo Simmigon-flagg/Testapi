@@ -2,6 +2,7 @@ package com.example.test_api;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import java.util.List;
 import retrofit2.Call;
@@ -25,15 +26,12 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
         jsonplaceholderAPI =  retrofit.create(JSONplaceholderAPI.class);
-
-//        getPosts();
-              getComments();
-
+           getPosts(3);
     }
 
-    private void getPosts(){
+    private void getPosts(int userId){
 
-        Call<List<Post>> call = jsonplaceholderAPI.getPosts();
+        Call<List<Post>> call = jsonplaceholderAPI.getPosts(userId);
 
         call.enqueue(new Callback<List<Post>>() {
             @Override
@@ -65,15 +63,17 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
+
+
+
+
 
 
 
     private void getComments(){
 
-        Call<List<Comment>> call = jsonplaceholderAPI.getComments();
+        Call<List<Comment>> call = jsonplaceholderAPI.getComments(3);
 
         call.enqueue(new Callback<List<Comment>>() {
             @Override
@@ -85,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 List<Comment> comments = response.body();
+                Log.d("LOG ","Simmigon Flagggg YOOOOOOOO");
+                Log.d("LOG ",comments.toString());
 
                 for (Comment comment : comments){
                     String content = "";
@@ -94,7 +96,12 @@ public class MainActivity extends AppCompatActivity {
                     content += "Email: " + comment.getEmail() + "\n";
                     content += "Text: " + comment.getText() + "\n\n";
 
-                    textViewResult.append(content);
+                    if (comment.getPostId() == 3){
+
+                        Log.d("Comment By PostID:\n","Values:\n"+ comment.getText());
+                        textViewResult.append(content);
+                    }
+
 
                 }
 

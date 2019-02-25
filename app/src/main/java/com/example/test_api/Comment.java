@@ -6,8 +6,9 @@ public class Comment {
 
     private int postId;
     private int id;
-    private String email;
     private String name;
+    private String email;
+
 
     @SerializedName("body")
     private String text;
